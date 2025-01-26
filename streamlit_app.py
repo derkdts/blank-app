@@ -1,21 +1,24 @@
 import streamlit as st
 import pandas as pd
 
-def create_table_with_dropdown(data, options):
+def create_table_with_dropdown(data, options_channel, options_lunch):
     df = pd.DataFrame(data)
-    df['Обед'] = ''  # Добавляем новый столбец "Обед"
-    selected_values = []
+    df['Канал'] = ''
+    df['Обед'] = ''
+    selected_values_channel = []
+    selected_values_lunch = []
 
     st.title('Распределение')
 
     for index, row in df.iterrows():
         unique_identifier = f"{row['Имя']} ({index+1})"
-        selected_values.append(st.selectbox(f"Время обеда для {unique_identifier}", options))
+        selected_values_channel.append(st.selectbox(f"Выбор канала для {unique_identifier}", options_channel))
+        selected_values_lunch.append(st.selectbox(f"Время обеда для {unique_identifier}", options_lunch))
 
     def update_df():
         for i in range(len(df)):
-            new_value = selected_values[i]
-            df.loc[i, 'Обед'] = new_value
+            df.loc[i, 'Канал'] = selected_values_channel[i]
+            df.loc[i, 'Обед'] = selected_values_lunch[i]
         st.dataframe(df)
 
     st.button('Обновить', on_click=update_df)
@@ -24,9 +27,10 @@ def create_table_with_dropdown(data, options):
 
 # Данные для таблиц
 data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан']}
-options = ['12:00', '13:00', '14:00', '15:00']
+options_channel = ['Спланк', 'Тикет', 'АЦ']
+options_lunch = ['12:00', '13:00', '14:00', '15:00']
 
-df = create_table_with_dropdown(data, options)
+df = create_table_with_dropdown(data, options_channel, options_lunch)
 
 # Сохранение результатов (пример)
 if st.button("Сохранить результаты"):
