@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+
 # Исходные данные
 data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5'],
         'Канал': ['Сп', 'Ткт', 'АЦ', 'Сп', 'Ткт'],
