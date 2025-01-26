@@ -8,23 +8,16 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
         'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
 
-# Функция для создания редактируемой таблицы
+# Сохраняем исходные данные в сессии
+if 'original_df' not in st.session_state:
+    st.session_state.original_df = df.copy()
+
 def create_editable_table(df):
-    st.dataframe(df, editable=True)
-    if st.button('Обновить'):
-        df[:] = st.session_state.df
-        st.success('Данные обновлены')
+    # ... (код для создания редактируемой таблицы)
+    st.session_state.edited_df = df
 
-# Функция для создания графика
 def create_chart(df):
-    fig = px.histogram(df, x='Канал', title='Распределение по каналам')
-    st.plotly_chart(fig)
-
-# Функция для сохранения данных
-def save_data(df):
-    if st.button("Сохранить данные"):
-        df.to_csv("data.csv", index=False)
-        st.success("Данные сохранены")
+    # ... (код для создания графика)
 
 # Вкладки
 tab1, tab2 = st.tabs(["Данные", "Анализ"])
@@ -36,16 +29,16 @@ with tab1:
 
     # Таблица с возможностью редактирования
     edited_df = create_editable_table(filtered_df)
-    st.session_state.df = edited_df
 
     # Кнопка сохранения
-    save_data(edited_df)
+    if st.button("Сохранить изменения"):
+        st.session_state.original_df = st.session_state.edited_df
+        st.success("Данные сохранены")
 
 with tab2:
-    # График
-    create_chart(df)
+    create_chart(st.session_state.original_df)
 
-# Настройки (например, тема)
+# Настройки
 theme = st.selectbox("Выберите тему", ["Светлая", "Темная"])
 if theme == "Темная":
     st.write("Темная тема выбрана")
