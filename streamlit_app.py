@@ -1,5 +1,7 @@
 import streamlit as st
 from streamlit.components.v1 import html
+import pandas as pd
+
 
 st.write(html("""
     <style>
@@ -9,7 +11,6 @@ st.write(html("""
     </style>
 """), unsafe_allow_html=True)
 
-import pandas as pd
 
 def create_table_with_dropdown(data, options_channel, options_lunch):
     df = pd.DataFrame(data)
