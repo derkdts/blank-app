@@ -22,7 +22,7 @@ st.title('Таблица с выпадающими меню')
 df['Канал'] = ''
 selected_values = []
 for index, row in df.iterrows():
-    selected_values.append(st.selectbox(f"Выбор {row['Имя']}", options))
+    selected_values.append(st.selectbox(f"Выбор для {row['Имя']}", options))
 
 # Кнопка для обновления таблицы
 st.button('Обновить', on_click=update_df)
