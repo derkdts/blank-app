@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from st_aggrid import AgGrid
 
 # Исходные данные
 data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5'],
@@ -17,39 +16,20 @@ def create_app():
     tab1, tab2 = st.tabs(["Редактирование", "Просмотр"])
 
     with tab1:
-        # Создаем словарь для конфигурации столбцов
-        columnDefs = [
-            {
-                'headerName': 'Канал',
-                'field': 'Канал',
-                'cellEditor': 'agSelectCellEditor',
-                'cellEditorParams': {'values': channels}
-            },
-            {
-                'headerName': 'Обед',
-                'field': 'Обед',
-                'cellEditor': 'agSelectCellEditor',
-                'cellEditorParams': {'values': lunch_times}
-            }
-        ]
+        # Создание формы для редактирования
+        with st.form("my_form"):
+            # Ввод имени
+            name = st.text_input("Имя", value=df['Имя'][0])
+            # Выбор канала
+            channel = st.selectbox("Канал", options=channels, index=0)
+            # Выбор времени обеда
+            lunch_time = st.selectbox("Обед", options=lunch_times, index=0)
 
-        # Создаем таблицу с помощью AgGrid
-        gridOptions = {'columnDefs': columnDefs, 'rowData': df.to_dict('records')}
-        grid_response = AgGrid(
-            df,
-            gridOptions=gridOptions,
-            enable_enterprise_modules=True,
-            fit_columns_on_grid_load=True,
-            height=350
-        )
-
-        # Получаем обновленные данные из таблицы
-        edited_df = pd.DataFrame(grid_response['data'])
-
-        # Кнопка сохранения
-        if st.button("Сохранить изменения"):
-            st.session_state.original_df = edited_df
-            st.success("Данные сохранены")
+            # Кнопка сохранения
+            if st.form_submit_button("Сохранить изменения"):
+                # Обновление данных
+                # ... (здесь нужно реализовать логику обновления DataFrame)
+                st.success("Данные сохранены")
 
     with tab2:
         # Таблица для просмотра
