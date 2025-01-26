@@ -1,15 +1,6 @@
 import streamlit as st
-from streamlit.components.v1 import html
 import pandas as pd
 
-
-st.write(html("""
-    <style>
-        select {
-            width: 200px; /* Задайте нужную ширину */
-        }
-    </style>
-"""), unsafe_allow_html=True)
 
 
 def create_table_with_dropdown(data, options_channel, options_lunch):
