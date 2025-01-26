@@ -33,8 +33,8 @@ for employee in employees:
     )
     st.session_state.selected_channels[employee] = selected_channel
 
-# Кнопка "Сохранить"
-col1, col2, _ = st.columns([1,1,6]) #Создаем колонки для размещения кнопки по центру
+# Кнопка "Сохранить" с улучшенным расположением
+col1, col2, _ = st.columns([1, 1, 6])
 with col1:
     pass
 with col2:
@@ -42,28 +42,43 @@ with col2:
         for employee, channel in st.session_state.selected_channels.items():
             st.session_state.df.loc[employee, 'Канал'] = channel
         st.success("Данные сохранены!")
-with _ :
-    pass
 
 # Выводим итоговую таблицу
 st.write("Итоговая таблица:")
 
-# Добавляем нумерацию строк
+# Добавляем нумерацию строк и улучшаем отображение
 df_display = st.session_state.df.reset_index()
 df_display.index += 1
 df_display = df_display.rename(columns={'index': '#'})
-
-st.dataframe(df_display, use_container_width=True) #Растягиваем таблицу на всю ширину
+st.dataframe(df_display, use_container_width=True, hide_index=True) # Скрываем старый индекс
 
 # Дополнительная информация
 st.write("Разработано с использованием Streamlit.")
 
-# Функция для очистки данных
+# Функция для очистки данных с подтверждением
 def clear_data():
-    st.session_state.df['Канал'] = "Не обедал"
-    st.session_state.selected_channels = {}
-    st.experimental_rerun() #Перезапускаем приложение для обновления данных
-    st.success("Данные очищены")
+    if st.session_state.df["Канал"].unique().tolist() != ["Не обедал"]: #Проверка, есть ли что очищать
+        if st.confirm("Вы уверены, что хотите очистить данные?"):
+            st.session_state.df['Канал'] = "Не обедал"
+            st.session_state.selected_channels = {}
+            st.experimental_rerun()
+            st.success("Данные очищены")
+    else:
+        st.warning("Данные уже очищены")
 
 if st.button("Очистить данные"):
     clear_data()
+
+# Экспорт в CSV
+@st.cache_data
+def convert_df(df):
+    return df.to_csv(index=False).encode('utf-8') #Убираем индекс из CSV
+
+csv = convert_df(st.session_state.df)
+
+st.download_button(
+    label="Скачать данные в формате CSV",
+    data=csv,
+    file_name='lunch_data.csv',
+    mime='text/csv',
+)
