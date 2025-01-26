@@ -4,8 +4,7 @@ import pandas as pd
 # Пример данных (замените на свои данные)
 data = {'Дата': pd.date_range('2023-01-01', periods=100),
         'Продукт': ['A', 'B', 'C'] * 33,
-        'Клиент': ['Клиент1', 'Клиент2', 'Клиент3'] * 33,
-        'Сумма': np.random.randint(100, 1000, 100)}
+        'Клиент': ['Клиент1', 'Клиент2', 'Клиент3'] * 33}
 df = pd.DataFrame(data)
 
 # Фильтр по продукту
@@ -16,5 +15,5 @@ filtered_df = df[df['Продукт'] == product_filter]
 st.dataframe(filtered_df)
 
 # График продаж по месяцам
-fig = px.line(filtered_df, x='Дата', y='Сумма', title='Динамика продаж')
+fig = px.line(filtered_df, x='Дата', title='Динамика продаж')
 st.plotly_chart(fig)
