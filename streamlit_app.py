@@ -14,8 +14,8 @@ today = datetime.date.today()
 # Функция для создания пустого DataFrame
 def create_empty_dataframe(date):
     df = pd.DataFrame(index=employees, columns=channels)
-    df['Дата'] = date.strftime("%d.%m.%Y")  # Добавляем столбец с датой
-    df = df.fillna(False)  # Заполняем значениями False
+    df['Дата'] = date.strftime("%d.%m.%Y") # Добавляем столбец с датой
+    df = df.fillna(False) # Заполняем значениями False
     return df
 
 # Проверяем, есть ли сохраненные данные в сессии
@@ -28,19 +28,30 @@ st.title("Учет каналов и обедов")
 # Выбор даты
 selected_date = st.date_input("Выберите дату:", today)
 
-# Конвертируем дату из строки в объект datetime.date для сравнения
-selected_date_obj = datetime.datetime.strptime(st.session_state.df['Дата'].iloc[0], "%d.%m.%Y").date()
-
 # Если выбрана другая дата, создаем новый DataFrame
-if selected_date != selected_date_obj:
+if selected_date != datetime.datetime.combine(st.session_state.df['Дата'].iloc[0], datetime.time.min):
     st.session_state.df = create_empty_dataframe(selected_date)
 
-# Отображаем таблицу и чекбоксы
+# Отображаем таблицу
 st.write("Отметьте, кто сегодня обедал по какому каналу:")
 for employee in employees:
     st.write(f"**{employee}**")
     for channel in channels:
-        st.session_state.df.loc[employee, channel] = st.checkbox(channel, value=st.session_state.df.loc[employee, channel], key=f"{employee}_{channel}_{selected_date}") # Добавили key
+        st.session_state.df.loc[employee, channel] = st.checkbox(channel, value=st.session_state.df.loc[employee, channel])
 
 # Выводим таблицу
 st.dataframe(st.session_state.df)
+
+# Добавляем кнопку для скачивания данных в формате CSV
+@st.cache_data
+def convert_df(df):
+    return df.to_csv().encode('utf-8')
+
+csv = convert_df(st.session_state.df)
+
+st.download_button(
+    label="Скачать данные в формате CSV",
+    data=csv,
+    file_name=f'lunch_data_{st.session_state.df["Дата"].iloc[0]}.csv',
+    mime='text/csv',
+)
