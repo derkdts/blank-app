@@ -1,15 +1,14 @@
 import streamlit as st
 import pandas as pd
 
-def create_table_with_dropdown(data, options):
+def create_table_with_dropdown(data, options, table_name):
     df = pd.DataFrame(data)
     df['Канал'] = ''
     selected_values = []
 
-    st.title('Распределение')
+    st.title(f'Таблица {table_name}')
 
     for index, row in df.iterrows():
-        # Добавляем порядковый номер для пользователей с одинаковыми именами
         unique_identifier = f"{row['Имя']} ({index+1})"
         selected_values.append(st.selectbox(f"Выбор для {unique_identifier}", options))
 
@@ -23,12 +22,12 @@ def create_table_with_dropdown(data, options):
 
     return df
 
-# Пример использования
-data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан']}
-options = ['Спланк', 'Тикет', 'АЦ']
-df = create_table_with_dropdown(data, options)
+# Первая таблица
+data1 = {'Имя': ['Алуа', 'Ерлан', 'Ернар'], 'Канал': ''}
+options1 = ['Спланк', 'Тикет', 'АЦ']
+df1 = create_table_with_dropdown(data1, options1, 'Таблица 1')
 
-# Сохранение результатов (пример)
-if st.button("Сохранить результаты"):
-    df.to_csv("results.csv", index=False)
-    st.success("Результаты сохранены в файл results.csv")
+# Вторая таблица
+data2 = {'Имя': ['Максат', 'Рамазан', 'Рамазан'], 'Канал': ''}
+options2 = ['Email', 'Телефон', 'Встреча']
+df2 = create_table_with_dropdown(data2, options2, 'Таблица 2')
