@@ -27,5 +27,12 @@ def create_app():
             # ... (здесь нужно реализовать логику обновления DataFrame)
             st.success("Данные сохранены")
 
+    # Таблица для просмотра
+    st.dataframe(st.session_state.original_df, use_container_width=True)
+
+# Сохраняем исходные данные в сессии
+if 'original_df' not in st.session_state:
+    st.session_state.original_df = df.copy()
+
 # Запускаем приложение
 create_app()
