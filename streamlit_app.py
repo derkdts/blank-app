@@ -8,8 +8,8 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
 df = pd.DataFrame(data)
 
 # Список возможных значений для столбцов
-option = ['Сп', 'Ткт', 'АЦ', 'Другой']
-option2 = ['12:00', '13:00', '14:00', '15:00']
+channels = ['Сп', 'Ткт', 'АЦ', 'Другой']
+lunch_times = ['12:00', '13:00', '14:00', '15:00']
 
 def create_app():
     # Вкладки
@@ -18,8 +18,8 @@ def create_app():
     with tab1:
         # Таблица для редактирования с выпадающими списками
         edited_df = st.data_editor(df, column_config={
-            'Канал': option,
-            'Обед': option2
+            'Канал': dict(options=channels),
+            'Обед': dict(options=lunch_times)
         })
 
         # Кнопка сохранения
