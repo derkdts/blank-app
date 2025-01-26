@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
 # Исходные данные
 data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5'],
@@ -8,9 +7,13 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
         'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
 
+# Сохраняем исходные данные в сессии
+if 'original_df' not in st.session_state:
+    st.session_state.original_df = df.copy()
+
 def create_editable_table(df):
     st.dataframe(df, editable=True)
-    if st.button('Обновить', key='update_button'):  # Уникальный ключ для кнопки
+    if st.button('Обновить', key='update_button'):
         df[:] = st.session_state.df
         st.success('Данные обновлены')
         st.session_state.edited_df = df
@@ -20,12 +23,12 @@ def create_editable_table(df):
 
     with tab1:
         # Фильтр по каналу
-        channel_filter = st.selectbox("Выберите канал", df['Канал'].unique(), key='channel_filter')
+        channel_filter = st.selectbox("Выберите канал", df['Канал'].unique())
         filtered_df = df[df['Канал'] == channel_filter]
 
         # Таблица с возможностью редактирования
         edited_df = filtered_df.copy()  # Создаем копию отфильтрованных данных
-        st.dataframe(edited_df, editable=True, key='editable_table')
+        st.dataframe(edited_df, editable=True)
 
         # Кнопка сохранения
         if st.button("Сохранить изменения", key='save_button'):
@@ -34,16 +37,7 @@ def create_editable_table(df):
 
     with tab2:
         # График
-        create_chart(st.session_state.original_df)
-
-    # Настройки
-    theme = st.selectbox("Выберите тему", ["Светлая", "Темная"], key='theme_select')
-    if theme == "Темная":
-        st.write("Темная тема выбрана")
-
-# Сохраняем исходные данные в сессии
-if 'original_df' not in st.session_state:
-    st.session_state.original_df = df.copy()
+        st.dataframe(st.session_state.original_df, use_container_width=True)
 
 # Вызываем функцию для создания таблицы
 create_editable_table(st.session_state.original_df)
