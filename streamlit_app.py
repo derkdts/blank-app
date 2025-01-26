@@ -16,16 +16,20 @@ def create_app():
     tab1, tab2 = st.tabs(["Редактирование", "Просмотр"])
 
     with tab1:
-        # Таблица для редактирования с выпадающими списками
-        edited_df = st.data_editor(df, column_config={
-            'Канал': dict(options=channels),
-            'Обед': dict(options=lunch_times)
-        })
+        # Создание формы для редактирования
+        with st.form("my_form"):
+            # Ввод имени
+            name = st.text_input("Имя", value=df['Имя'][0])
+            # Выбор канала
+            channel = st.selectbox("Канал", options=channels, index=0)
+            # Выбор времени обеда
+            lunch_time = st.selectbox("Обед", options=lunch_times, index=0)
 
-        # Кнопка сохранения
-        if st.button("Сохранить изменения"):
-            st.session_state.original_df = edited_df
-            st.success("Данные сохранены")
+            # Кнопка сохранения
+            if st.form_submit_button("Сохранить изменения"):
+                # Обновление данных
+                # ... (здесь нужно реализовать логику обновления DataFrame)
+                st.success("Данные сохранены")
 
     with tab2:
         # Таблица для просмотра
