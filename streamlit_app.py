@@ -14,6 +14,8 @@ if 'original_df' not in st.session_state:
 def create_app():
     # Таблица для редактирования
     edited_df = st.data_editor(st.session_state.original_df)
+edited_df = st.data_editor(df, column_config={'Обед': dict(options=['12:00', '13:00', '14:00', '15:00'])})
+
 
     # Кнопка сохранения
     if st.button("Сохранить изменения"):
