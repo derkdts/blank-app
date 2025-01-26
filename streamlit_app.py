@@ -24,7 +24,7 @@ def create_table_with_dropdown(data, options):
     return df
 
 # Пример использования
-data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан', 'Рамазан']}
+data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан']}
 options = ['Спланк', 'Тикет', 'АЦ']
 df = create_table_with_dropdown(data, options)
 
