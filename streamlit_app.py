@@ -13,16 +13,20 @@ if 'original_df' not in st.session_state:
 
 def create_app():
     # Вкладки
-    tab1, tab2 = st.tabs(["Просмотр", "Редактирование"])
+    tab1, tab2 = st.tabs(["Редактирование", "Просмотр"])
 
     with tab1:
-        # Таблица для просмотра
-        st.dataframe(st.session_state.original_df, use_container_width=True)
-
-    with tab2:
         # Таблица для редактирования
         edited_df = st.data_editor(st.session_state.original_df)
-        st.session_state.original_df = edited_df
+
+        # Кнопка сохранения
+        if st.button("Сохранить изменения"):
+            st.session_state.original_df = edited_df
+            st.success("Данные сохранены")
+
+    with tab2:
+        # Таблица для просмотра
+        st.dataframe(st.session_state.original_df, use_container_width=True)
 
 # Запускаем приложение
 create_app()
