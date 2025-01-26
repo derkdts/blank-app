@@ -28,8 +28,12 @@ st.title("Учет каналов и обедов")
 # Выбор даты
 selected_date = st.date_input("Выберите дату:", today)
 
+# Конвертируем дату из строки в объект datetime.date 
+# перед сравнением
+selected_date_obj = datetime.datetime.strptime(st.session_state.df['Дата'].iloc[0], "%d.%m.%Y").date()
+
 # Если выбрана другая дата, создаем новый DataFrame
-if selected_date != datetime.datetime.combine(st.session_state.df['Дата'].iloc[0], datetime.time.min):
+if selected_date != selected_date_obj:
     st.session_state.df = create_empty_dataframe(selected_date)
 
 # Отображаем таблицу
