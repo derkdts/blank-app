@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import datetime
+
 
 # Список сотрудников
 employees = ["Сотрудник 1", "Сотрудник 2", "Сотрудник 3", "Сотрудник 4", "Сотрудник 5", "Сотрудник 6", "Сотрудник 7"]
@@ -8,15 +8,6 @@ employees = ["Сотрудник 1", "Сотрудник 2", "Сотрудник
 # Список каналов
 channels = ["Канал 1"]
 
-# Получаем текущую дату
-today = datetime.date.today()
-
-# Функция для создания пустого DataFrame
-def create_empty_dataframe(date):
-    df = pd.DataFrame(index=employees, columns=channels)
-    df['Дата'] = date.strftime("%d.%m.%Y") # Добавляем столбец с датой
-    df = df.fillna(False) # Заполняем значениями False
-    return df
 
 # Проверяем, есть ли сохраненные данные в сессии
 if 'df' not in st.session_state:
@@ -25,12 +16,7 @@ if 'df' not in st.session_state:
 # Заголовок приложения
 st.title("Учет каналов и обедов")
 
-# Выбор даты
-selected_date = st.date_input("Выберите дату:", today)
 
-# Если выбрана другая дата, создаем новый DataFrame
-if selected_date != datetime.datetime.combine(st.session_state.df['Дата'].iloc[0], datetime.time.min):
-    st.session_state.df = create_empty_dataframe(selected_date)
 
 # Отображаем таблицу
 st.write("Отметьте, кто сегодня обедал по какому каналу:")
