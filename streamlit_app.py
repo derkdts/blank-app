@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-# Создаем образец данных (добавим столбец с уникальным ID)
-data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан', 'Рамазан'], 'Канал': ''}
+# Создаем образец данных
+data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан', 'Рамазан']}
 df = pd.DataFrame(data)
 
 # Создаем список вариантов для выпадающего меню
@@ -19,9 +19,10 @@ def update_df():
 st.title('Таблица с выпадающими меню')
 
 # Добавляем новый столбец с выпадающими меню
+df['Канал'] = ''
 selected_values = []
 for index, row in df.iterrows():
-    selected_values.append(st.selectbox(f"Выберите значение для {row['Имя']})", options))
+    selected_values.append(st.selectbox(f"Выбор {row['Имя']}", options))
 
 # Кнопка для обновления таблицы
 st.button('Обновить', on_click=update_df)
