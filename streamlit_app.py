@@ -7,9 +7,8 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
         'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
 
-# Сохраняем исходные данные в сессии
-if 'original_df' not in st.session_state:
-    st.session_state.original_df = df.copy()
+# Список возможных значений для столбца "Канал"
+channels = ['Сп', 'Ткт', 'АЦ', 'Другой']
 
 def create_app():
     # Вкладки
@@ -17,7 +16,7 @@ def create_app():
 
     with tab1:
         # Таблица для редактирования
-        edited_df = st.data_editor(st.session_state.original_df)
+        edited_df = st.data_editor(df, column_config={'Канал': dict(options=channels)})
 
         # Кнопка сохранения
         if st.button("Сохранить изменения"):
