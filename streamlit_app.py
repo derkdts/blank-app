@@ -1,19 +1,28 @@
 import streamlit as st
 import pandas as pd
 
-# Пример данных (замените на свои данные)
-data = {'Дата': pd.date_range('2023-01-01', periods=100),
-        'Продукт': ['A', 'B', 'C'] * 33,
-        'Клиент': ['Клиент1', 'Клиент2', 'Клиент3'] * 33}
+# Исходные данные
+data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5'],
+        'Канал': ['Сп', 'Ткт', 'АЦ', 'Сп', 'Ткт'],
+        'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
 
-# Фильтр по продукту
-product_filter = st.selectbox('Выберите продукт', df['Продукт'].unique())
-filtered_df = df[df['Продукт'] == product_filter]
+# Сохраняем исходные данные в сессии
+if 'original_df' not in st.session_state:
+    st.session_state.original_df = df.copy()
 
-# Отображение таблицы
-st.dataframe(filtered_df)
+def create_app():
+    # Вкладки
+    tab1, tab2 = st.tabs(["Просмотр", "Редактирование"])
 
-# График продаж по месяцам
-fig = px.line(filtered_df, x='Дата', title='Динамика продаж')
-st.plotly_chart(fig)
+    with tab1:
+        # Таблица для просмотра
+        st.dataframe(st.session_state.original_df, use_container_width=True)
+
+    with tab2:
+        # Таблица для редактирования
+        edited_df = st.data_editor(st.session_state.original_df)
+        st.session_state.original_df = edited_df
+
+# Запускаем приложение
+create_app()
