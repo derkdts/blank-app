@@ -1,22 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-
-
-
-# Сохраняем текущую страницу в сессии
-if 'page' not in st.session_state:
-    st.session_state.page = "page1"
-
-# Кнопки для переключения страниц
-pages = ["page1", "page2", "page3"]
-selected_page = st.radio("Выберите страницу", pages)
-st.session_state.page = selected_page
-
-# Отображение содержимого в зависимости от страницы
-if st.session_state.page == "page1":
-    st.write(
-
 def create_table_with_dropdown(data, options_channel, options_lunch):
     df = pd.DataFrame(data)
     df['Канал'] = ''
@@ -46,14 +30,25 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
 options_channel = ['Сп', 'Ткт', 'АЦ']
 options_lunch = ['12:00', '13:00', '14:00', '15:00']
 
-df = create_table_with_dropdown(data, options_channel, options_lunch)
-
 # Сохранение результатов (пример)
-if st.button("Сохранить результаты"):
-    df.to_csv("results.csv", index=False)
-    st.success("Результаты сохранены в файл results.csv"))
+def save_results(df):
+    if st.button("Сохранить результаты"):
+        df.to_csv("results.csv", index=False)
+        st.success("Результаты сохранены в файл results.csv")
 
+# Создание таблицы и кнопок навигации
+if st.session_state.page == "page1":
+    df = create_table_with_dropdown(data, options_channel, options_lunch)
+    save_results(df)
 elif st.session_state.page == "page2":
-    st.write("Содержимое второй страницы")
+    # Содержимое второй страницы
+    st.write("Это страница 2")
+    # ... ваш код для второй страницы
 else:
     st.write("Содержимое третьей страницы")
+    # ... ваш код для третьей страницы
+
+# Кнопки для переключения страниц
+pages = ["page1", "page2", "page3"]
+selected_page = st.radio("Выберите страницу", pages)
+st.session_state.page = selected_page
