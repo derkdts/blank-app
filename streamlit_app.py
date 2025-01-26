@@ -6,7 +6,7 @@ def create_table_with_dropdown(data, options):
     df['Канал'] = ''
     selected_values = []
 
-    st.title('Таблица с выпадающими меню')
+    st.title('Распределение')
 
     for index, row in df.iterrows():
         # Добавляем порядковый номер для пользователей с одинаковыми именами
