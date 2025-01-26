@@ -8,12 +8,12 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
         'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
 
-# Функция для создания редактируемой таблицы
 def create_editable_table(df):
     st.dataframe(df, editable=True)
     if st.button('Обновить'):
         df[:] = st.session_state.df
         st.success('Данные обновлены')
+        st.session_state.edited_df = df
 
     # Вкладки должны быть внутри функции
     tab1, tab2 = st.tabs(["Данные", "Анализ"])
@@ -24,12 +24,12 @@ def create_editable_table(df):
         filtered_df = df[df['Канал'] == channel_filter]
 
         # Таблица с возможностью редактирования
-        edited_df = create_editable_table(filtered_df)
-        st.session_state.df = edited_df
+        edited_df = filtered_df.copy()  # Создаем копию отфильтрованных данных
+        st.dataframe(edited_df, editable=True)
 
         # Кнопка сохранения
         if st.button("Сохранить изменения"):
-            st.session_state.original_df = st.session_state.edited_df
+            st.session_state.original_df = edited_df
             st.success("Данные сохранены")
 
     with tab2:
@@ -40,3 +40,10 @@ def create_editable_table(df):
     theme = st.selectbox("Выберите тему", ["Светлая", "Темная"])
     if theme == "Темная":
         st.write("Темная тема выбрана")
+
+# Сохраняем исходные данные в сессии
+if 'original_df' not in st.session_state:
+    st.session_state.original_df = df.copy()
+
+# Вызываем функцию для создания таблицы
+create_editable_table(st.session_state.original_df)
