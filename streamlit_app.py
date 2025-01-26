@@ -1,49 +1,25 @@
 import streamlit as st
 import pandas as pd
-import datetime
 
 # Список сотрудников
 employees = ["Сотрудник 1", "Сотрудник 2", "Сотрудник 3", "Сотрудник 4", "Сотрудник 5", "Сотрудник 6", "Сотрудник 7"]
 
-# Список каналов
-channels = ["Канал 1", "Канал 2", "Канал 3"]
+# Список каналов (включая вариант "Не обедал")
+channels = ["Не обедал", "Канал 1", "Канал 2", "Канал 3"]
 
-# Получаем текущую дату
-today = datetime.date.today()
-
-# Функция для создания пустого DataFrame
-def create_empty_dataframe(date):
-    df = pd.DataFrame(0, index=employees, columns=channels)  # Инициализируем нулями
-    df['Дата'] = date.strftime("%d.%m.%Y")
-    return df
-
-# Проверяем, есть ли сохраненные данные в сессии
+# Создаем DataFrame для хранения выбранных каналов
 if 'df' not in st.session_state:
-    st.session_state.df = create_empty_dataframe(today)
+    st.session_state.df = pd.DataFrame(index=employees, columns=['Канал'])
+    st.session_state.df['Канал'] = "Не обедал" # Инициализируем значением "Не обедал"
 
-# Заголовок приложения
 st.title("Учет каналов и обедов")
 
-# Выбор даты
-selected_date = st.date_input("Выберите дату:", today)
+st.write("Выберите канал для каждого сотрудника:")
 
-# Преобразуем дату из строки в datetime.date для сравнения
-try:
-    selected_date_obj = datetime.datetime.strptime(st.session_state.df['Дата'].iloc[0], "%d.%m.%Y").date()
-except (ValueError, IndexError):  # Обработка исключений при первом запуске
-    selected_date_obj = today
+for employee in employees:
+    default_index = channels.index(st.session_state.df.loc[employee, 'Канал']) # Получаем индекс текущего значения
+    selected_channel = st.selectbox(f"**{employee}**", channels, index=default_index, key=employee)
+    st.session_state.df.loc[employee, 'Канал'] = selected_channel
 
-# Если выбрана другая дата, создаем новый DataFrame
-if selected_date != selected_date_obj:
-    st.session_state.df = create_empty_dataframe(selected_date)
-
-# Отображаем таблицу с возможностью редактирования
-st.write("Укажите количество обедов по каждому каналу:")
-edited_df = st.data_editor(st.session_state.df.drop('Дата', axis=1), key=f"editor_{selected_date}") #Удаляем столбец Дата для редактирования
-
-# Сохраняем изменения обратно в session_state, добавляя столбец Дата
-st.session_state.df = pd.concat([edited_df, st.session_state.df[['Дата']]], axis=1)
-
-# Выводим итоговую таблицу для проверки
 st.write("Итоговая таблица:")
 st.dataframe(st.session_state.df)
