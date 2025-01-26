@@ -6,7 +6,7 @@ def create_table_with_dropdown(data, options, table_name):
     df['Канал'] = ''
     selected_values = []
 
-    st.title(f'Таблица {table_name}')
+    st.title(f'Распределение')
 
     for index, row in df.iterrows():
         unique_identifier = f"{row['Имя']} ({index+1})"
