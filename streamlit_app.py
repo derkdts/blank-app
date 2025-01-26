@@ -1,7 +1,14 @@
 import streamlit as st
 import pandas as pd
 
-def create_table_with_dropdown(data, options_channel, options_lunch):
+def create_table(data, options_channel, options_lunch):
+    """Создает таблицу с выпадающими списками для выбора канала и времени обеда.
+
+    Args:
+        data: Словарь с данными для таблицы.
+        options_channel: Список вариантов для канала.
+        options_lunch: Список вариантов для времени обеда.
+    """
     df = pd.DataFrame(data)
     df['Канал'] = ''
     df['Обед'] = ''
@@ -25,30 +32,35 @@ def create_table_with_dropdown(data, options_channel, options_lunch):
 
     return df
 
-# Данные для таблиц
-data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5']}
-options_channel = ['Сп', 'Ткт', 'АЦ']
-options_lunch = ['12:00', '13:00', '14:00', '15:00']
-
-# Сохранение результатов (пример)
 def save_results(df):
     if st.button("Сохранить результаты"):
         df.to_csv("results.csv", index=False)
         st.success("Результаты сохранены в файл results.csv")
 
-# Создание таблицы и кнопок навигации
-if st.session_state.page == "page1":
+def page1():
+    data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5']}
+    options_channel = ['Сп', 'Ткт', 'АЦ']
+    options_lunch = ['12:00', '13:00', '14:00', '15:00']
     df = create_table_with_dropdown(data, options_channel, options_lunch)
     save_results(df)
-elif st.session_state.page == "page2":
-    # Содержимое второй страницы
+
+def page2():
     st.write("Это страница 2")
-    # ... ваш код для второй страницы
-else:
-    st.write("Содержимое третьей страницы")
-    # ... ваш код для третьей страницы
+    # Здесь будет код для второй страницы
+
+# Сохранение текущей страницы в сессии
+if 'page' not in st.session_state:
+    st.session_state.page = "page1"
 
 # Кнопки для переключения страниц
 pages = ["page1", "page2", "page3"]
 selected_page = st.radio("Выберите страницу", pages)
 st.session_state.page = selected_page
+
+# Отображение содержимого в зависимости от страницы
+page_functions = {
+    "page1": page1,
+    "page2": page2,
+    "page3": lambda: st.write("Содержимое третьей страницы")
+}
+page_functions[st.session_state.page]()
