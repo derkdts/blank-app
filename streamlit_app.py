@@ -50,6 +50,3 @@ if st.button("Сохранить результаты"):
         st.dataframe(df1)
         st.subheader("Таблица 2")
         st.dataframe(df2)
-for i in range(len(df)):
-    # ...
-    st.button(f'Обновить {i}', key=f'button_{i}', on_click=update_df)
