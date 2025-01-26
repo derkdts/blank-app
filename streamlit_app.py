@@ -20,12 +20,12 @@ def create_editable_table(df):
 
     with tab1:
         # Фильтр по каналу
-        channel_filter = st.selectbox("Выберите канал", df['Канал'].unique())
+        channel_filter = st.selectbox("Выберите канал", df['Канал'].unique(), key='channel_filter')
         filtered_df = df[df['Канал'] == channel_filter]
 
         # Таблица с возможностью редактирования
         edited_df = filtered_df.copy()  # Создаем копию отфильтрованных данных
-        st.dataframe(edited_df, editable=True)
+        st.dataframe(edited_df, editable=True, key='editable_table')
 
         # Кнопка сохранения
         if st.button("Сохранить изменения", key='save_button'):
@@ -37,7 +37,7 @@ def create_editable_table(df):
         create_chart(st.session_state.original_df)
 
     # Настройки
-    theme = st.selectbox("Выберите тему", ["Светлая", "Темная"])
+    theme = st.selectbox("Выберите тему", ["Светлая", "Темная"], key='theme_select')
     if theme == "Темная":
         st.write("Темная тема выбрана")
 
