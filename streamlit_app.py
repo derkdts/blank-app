@@ -10,7 +10,7 @@ df = pd.DataFrame(data)
 
 def create_editable_table(df):
     st.dataframe(df, editable=True)
-    if st.button('Обновить'):
+    if st.button('Обновить', key='update_button'):  # Уникальный ключ для кнопки
         df[:] = st.session_state.df
         st.success('Данные обновлены')
         st.session_state.edited_df = df
@@ -28,7 +28,7 @@ def create_editable_table(df):
         st.dataframe(edited_df, editable=True)
 
         # Кнопка сохранения
-        if st.button("Сохранить изменения"):
+        if st.button("Сохранить изменения", key='save_button'):
             st.session_state.original_df = edited_df
             st.success("Данные сохранены")
 
