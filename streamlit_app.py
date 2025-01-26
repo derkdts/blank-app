@@ -7,29 +7,18 @@ data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5
         'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
 
-# Список возможных значений для столбцов
-channels = ['Сп', 'Ткт', 'АЦ', 'Другой']
-lunch_times = ['12:00', '13:00', '14:00', '15:00']
-
 def create_app():
     # Вкладки
     tab1, tab2 = st.tabs(["Редактирование", "Просмотр"])
 
     with tab1:
-        # Создание формы для редактирования
-        with st.form("my_form"):
-            # Ввод имени
-            name = st.text_input("Имя", value=df['Имя'][0])
-            # Выбор канала
-            channel = st.selectbox("Канал", options=channels, index=0)
-            # Выбор времени обеда
-            lunch_time = st.selectbox("Обед", options=lunch_times, index=0)
+        # Таблица для редактирования
+        edited_df = st.data_editor(df)
 
-            # Кнопка сохранения
-            if st.form_submit_button("Сохранить изменения"):
-                # Обновление данных
-                # ... (здесь нужно реализовать логику обновления DataFrame)
-                st.success("Данные сохранены")
+        # Кнопка сохранения
+        if st.button("Сохранить изменения"):
+            st.session_state.original_df = edited_df
+            st.success("Данные сохранены")
 
     with tab2:
         # Таблица для просмотра
