@@ -13,9 +13,8 @@ today = datetime.date.today()
 
 # Функция для создания пустого DataFrame
 def create_empty_dataframe(date):
-    df = pd.DataFrame(index=employees, columns=channels)
-    df['Дата'] = date.strftime("%d.%m.%Y") # Добавляем столбец с датой
-    df = df.fillna(False) # Заполняем значениями False
+    df = pd.DataFrame(0, index=employees, columns=channels)  # Инициализируем нулями
+    df['Дата'] = date.strftime("%d.%m.%Y")
     return df
 
 # Проверяем, есть ли сохраненные данные в сессии
@@ -28,34 +27,23 @@ st.title("Учет каналов и обедов")
 # Выбор даты
 selected_date = st.date_input("Выберите дату:", today)
 
-# Конвертируем дату из строки в объект datetime.date 
-# перед сравнением
-selected_date_obj = datetime.datetime.strptime(st.session_state.df['Дата'].iloc[0], "%d.%m.%Y").date()
+# Преобразуем дату из строки в datetime.date для сравнения
+try:
+    selected_date_obj = datetime.datetime.strptime(st.session_state.df['Дата'].iloc[0], "%d.%m.%Y").date()
+except (ValueError, IndexError):  # Обработка исключений при первом запуске
+    selected_date_obj = today
 
 # Если выбрана другая дата, создаем новый DataFrame
 if selected_date != selected_date_obj:
     st.session_state.df = create_empty_dataframe(selected_date)
 
-# Отображаем таблицу
-st.write("Отметьте, кто сегодня обедал по какому каналу:")
-for employee in employees:
-    st.write(f"**{employee}**")
-    for channel in channels:
-        st.session_state.df.loc[employee, channel] = st.checkbox(channel, value=st.session_state.df.loc[employee, channel])
+# Отображаем таблицу с возможностью редактирования
+st.write("Укажите количество обедов по каждому каналу:")
+edited_df = st.data_editor(st.session_state.df.drop('Дата', axis=1), key=f"editor_{selected_date}") #Удаляем столбец Дата для редактирования
 
-# Выводим таблицу
+# Сохраняем изменения обратно в session_state, добавляя столбец Дата
+st.session_state.df = pd.concat([edited_df, st.session_state.df[['Дата']]], axis=1)
+
+# Выводим итоговую таблицу для проверки
+st.write("Итоговая таблица:")
 st.dataframe(st.session_state.df)
-
-# Добавляем кнопку для скачивания данных в формате CSV
-@st.cache_data
-def convert_df(df):
-    return df.to_csv().encode('utf-8')
-
-csv = convert_df(st.session_state.df)
-
-st.download_button(
-    label="Скачать данные в формате CSV",
-    data=csv,
-    file_name=f'lunch_data_{st.session_state.df["Дата"].iloc[0]}.csv',
-    mime='text/csv',
-)
