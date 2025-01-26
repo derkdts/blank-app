@@ -1,6 +1,14 @@
 import streamlit as st
+import pandas as pd
 
-st.title("🎈 My new app")
-st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
-)
+# Создаем DataFrame (пример)
+data = {'Имя': ['Алиса', 'Борис', 'Вера'],
+        'Возраст': [25, 30, 22],
+        'Город': ['Москва', 'Санкт-Петербург', 'Новосибирск']}
+df = pd.DataFrame(data)
+
+# Заголовок приложения
+st.title('Пример таблицы в Streamlit')
+
+# Отображаем таблицу
+st.table(df)
