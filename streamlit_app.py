@@ -26,8 +26,8 @@ def create_table_with_dropdown(data, options_channel, options_lunch):
     return df
 
 # Данные для таблиц
-data = {'Имя': ['Алуа', 'Ерлан', 'Ернар', 'Максат', 'Рамазан']}
-options_channel = ['Спланк', 'Тикет', 'АЦ']
+data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5']}
+options_channel = ['Сп', 'Ткт', 'АЦ']
 options_lunch = ['12:00', '13:00', '14:00', '15:00']
 
 df = create_table_with_dropdown(data, options_channel, options_lunch)
