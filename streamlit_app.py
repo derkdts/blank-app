@@ -1,47 +1,49 @@
 import streamlit as st
 import pandas as pd
+import datetime
 
 # Список сотрудников
 employees = ["Сотрудник 1", "Сотрудник 2", "Сотрудник 3", "Сотрудник 4", "Сотрудник 5", "Сотрудник 6", "Сотрудник 7"]
 
-# Список каналов (включая "Не обедал")
-channels = ["Не обедал", "Канал 1", "Канал 2", "Канал 3"]
+# Список каналов
+channels = ["Канал 1", "Канал 2", "Канал 3"]
 
-# Инициализация DataFrame в session_state
+# Получаем текущую дату
+today = datetime.date.today()
+
+# Функция для создания пустого DataFrame
+def create_empty_dataframe(date):
+    df = pd.DataFrame(0, index=employees, columns=channels)  # Инициализируем нулями
+    df['Дата'] = date.strftime("%d.%m.%Y")
+    return df
+
+# Проверяем, есть ли сохраненные данные в сессии
 if 'df' not in st.session_state:
-    st.session_state.df = pd.DataFrame(index=employees, columns=['Канал'])
-    st.session_state.df['Канал'] = "Не обедал"
+    st.session_state.df = create_empty_dataframe(today)
 
+# Заголовок приложения
 st.title("Учет каналов и обедов")
 
-st.write("Выберите канал для каждого сотрудника:")
+# Выбор даты
+selected_date = st.date_input("Выберите дату:", today)
 
-# Создаем словарь для хранения выбранных каналов в текущей сессии
-if 'selected_channels' not in st.session_state:
-    st.session_state.selected_channels = {}
+# Преобразуем дату из строки в datetime.date для сравнения
+try:
+    selected_date_obj = datetime.datetime.strptime(st.session_state.df['Дата'].iloc[0], "%d.%m.%Y").date()
+except (ValueError, IndexError):  # Обработка исключений при первом запуске
+    selected_date_obj = today
 
-for employee in employees:
-    # Используем значение из session_state или значение по умолчанию "Не обедал"
-    default_channel = st.session_state.df.loc[employee, 'Канал'] if employee in st.session_state.df.index else "Не обедал"
-    default_index = channels.index(default_channel)
+# Если выбрана другая дата, создаем новый DataFrame
+if selected_date != selected_date_obj:
+    st.session_state.df = create_empty_dataframe(selected_date)
 
-    selected_channel = st.selectbox(
-        f"**{employee}**",
-        channels,
-        index=default_index,
-        key=f"channel_select_{employee}" # Улучшенный ключ
-    )
-    st.session_state.selected_channels[employee] = selected_channel #Сохраняем в словаре
+# Отображаем таблицу с возможностью редактирования
+st.write("Укажите количество обедов по каждому каналу:")
+edited_df = st.data_editor(st.session_state.df.drop('Дата', axis=1), key=f"editor_{selected_date}") #Удаляем столбец Дата для редактирования
 
-# Кнопка "Сохранить"
-if st.button("Сохранить"):
-    for employee, channel in st.session_state.selected_channels.items():
-        st.session_state.df.loc[employee, 'Канал'] = channel
-    st.success("Данные сохранены!") # Сообщение об успехе
+# Сохраняем изменения обратно в session_state, добавляя столбец Дата
+st.session_state.df = pd.concat([edited_df, st.session_state.df[['Дата']]], axis=1)
 
-# Выводим итоговую таблицу
+# Выводим итоговую таблицу для проверки
 st.write("Итоговая таблица:")
 st.dataframe(st.session_state.df)
-
-#Дополнительная информация
-st.write("Разработано с использованием Streamlit.")
