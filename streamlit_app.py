@@ -32,3 +32,15 @@ with tab2:
 with tab3:
     # Настройки приложения (например, выбор темы)
     st.selectbox("Выберите тему", ["Светлая", "Темная"])
+
+
+# ... ваш существующий код
+
+# Фильтр по каналу
+selected_channel = st.selectbox("Выберите канал", options_channel)
+
+# Фильтрация данных
+filtered_df = df[df['Канал'] == selected_channel]
+
+# Отображение отфильтрованных данных
+st.dataframe(filtered_df)
