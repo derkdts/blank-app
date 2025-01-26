@@ -1,26 +1,19 @@
 import streamlit as st
 import pandas as pd
 
-# Исходные данные
+# Исходные данные (без столбца "Статус")
 data = {'Имя': ['Спец', 'Спец2', 'Спец3', 'Спец4', 'Спец5'],
         'Канал': ['Сп', 'Ткт', 'АЦ', 'Сп', 'Ткт'],
         'Обед': ['12:00', '13:00', '14:00', '15:00', '12:00']}
 df = pd.DataFrame(data)
-
-# Список возможных значений для столбцов
-channels = ['Сп', 'Ткт', 'АЦ', 'Другой']
-lunch_times = ['12:00', '13:00', '14:00', '15:00']
 
 def create_app():
     # Вкладки
     tab1, tab2 = st.tabs(["Редактирование", "Просмотр"])
 
     with tab1:
-        # Таблица для редактирования с выпадающими списками
-        edited_df = st.data_editor(df, column_config={
-            'Канал': dict(options=channels),
-            'Обед': dict(options=lunch_times)
-        })
+        # Таблица для редактирования
+        edited_df = st.data_editor(df)
 
         # Кнопка сохранения
         if st.button("Сохранить изменения"):
@@ -30,6 +23,10 @@ def create_app():
     with tab2:
         # Таблица для просмотра
         st.dataframe(st.session_state.original_df, use_container_width=True)
+
+# Сохраняем исходные данные в сессии
+if 'original_df' not in st.session_state:
+    st.session_state.original_df = df.copy()
 
 # Запускаем приложение
 create_app()
