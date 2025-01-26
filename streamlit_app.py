@@ -3,6 +3,20 @@ import pandas as pd
 
 
 
+
+# Сохраняем текущую страницу в сессии
+if 'page' not in st.session_state:
+    st.session_state.page = "page1"
+
+# Кнопки для переключения страниц
+pages = ["page1", "page2", "page3"]
+selected_page = st.radio("Выберите страницу", pages)
+st.session_state.page = selected_page
+
+# Отображение содержимого в зависимости от страницы
+if st.session_state.page == "page1":
+    st.write(
+
 def create_table_with_dropdown(data, options_channel, options_lunch):
     df = pd.DataFrame(data)
     df['Канал'] = ''
@@ -37,4 +51,9 @@ df = create_table_with_dropdown(data, options_channel, options_lunch)
 # Сохранение результатов (пример)
 if st.button("Сохранить результаты"):
     df.to_csv("results.csv", index=False)
-    st.success("Результаты сохранены в файл results.csv")
+    st.success("Результаты сохранены в файл results.csv"))
+
+elif st.session_state.page == "page2":
+    st.write("Содержимое второй страницы")
+else:
+    st.write("Содержимое третьей страницы")
